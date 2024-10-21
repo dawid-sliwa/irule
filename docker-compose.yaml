@@ -1,0 +1,27 @@
+services:
+  # nats:
+  #   image: nats:latest
+  #   pull_policy: "always"
+  #   restart: unless-stopped
+  #   volumes:
+  #     - nats:/data
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         memory: 1G
+
+  db:
+    image: postgres:latest
+    restart: unless-stopped
+    volumes:
+      - db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_USER=admin
+      - POSTGRES_DB=postgres
+    ports:
+      - "5432:5432"
+
+volumes:
+  nats:
+  db:
