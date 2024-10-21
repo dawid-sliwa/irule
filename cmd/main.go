@@ -79,7 +79,7 @@ func main() {
 	}()
 
 	wg.Add(1)
-	go rest.New(gctx, &wg, pool)
+	go rest.New(gctx, &wg, pool, cfg)
 
 	zap.S().Info("Server started")
 

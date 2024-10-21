@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	v1 "irule-api/internal/api/v1"
+	"irule-api/internal/config"
 	"log"
 	"net/http"
 	"sync"
@@ -13,11 +14,11 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func New(gtcx context.Context, wg *sync.WaitGroup, dbPool *pgxpool.Pool) {
+func New(gtcx context.Context, wg *sync.WaitGroup, dbPool *pgxpool.Pool, cfg *config.Config) {
 	defer wg.Done()
 
 	r := chi.NewRouter()
-	r.Mount("/api/v1", v1.New(dbPool))
+	r.Mount("/api/v1", v1.New(dbPool, cfg))
 
 	server := &http.Server{
 		Addr:    ":8080",

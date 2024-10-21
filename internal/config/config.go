@@ -14,6 +14,7 @@ type Config struct {
 	DB_HOST     string `mapstructure:"DB_HOST"`
 	DB_PORT     int    `mapstructure:"DB_PORT"`
 	DB_NAME     string `mapstructure:"DB_NAME"`
+	JWT_SECRET  string `mapstructure:"JWT_SECRET"`
 }
 
 func New() (*Config, error) {
