@@ -3,7 +3,6 @@ package models
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"irule-api/data"
 	"time"
 
@@ -26,7 +25,6 @@ func FindByEmail(dbPool *pgxpool.Pool, email string) (*User, error) {
 	var user User
 	err := dbPool.QueryRow(context.Background(), data.QueryUser, email).Scan(&user.ID, &user.Email, &user.Password, &user.Role)
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
 	return &user, nil

@@ -55,12 +55,21 @@ func Register(dbPool *pgxpool.Pool) http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
+		dUser, err := models.FindByEmail(dbPool, body.Email)
+		if err != nil && err.Error() != "no rows in result set" {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		if dUser != nil {
+			http.Error(w, "User already exists", http.StatusBadRequest)
+			return
+		}
 		user := models.User{
 			Email:    body.Email,
 			Password: body.Password,
 			Role:     "admin",
 		}
-		err := user.Create(dbPool)
+		err = user.Create(dbPool)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
