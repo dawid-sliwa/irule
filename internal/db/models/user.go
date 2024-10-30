@@ -12,18 +12,19 @@ import (
 )
 
 type User struct {
-	ID        uuid.UUID
-	Name      sql.NullString
-	LastName  sql.NullString
-	Password  string
-	Email     string
-	CreatedAt time.Time
-	Role      string
+	ID             uuid.UUID      `json:"id"`
+	Name           sql.NullString `json:"name"`
+	LastName       sql.NullString `json:"last_name"`
+	Password       string         `json:"-"`
+	Email          string         `json:"email"`
+	CreatedAt      time.Time      `json:"created_at"`
+	Role           string         `json:"role"`
+	OrganizationId uuid.UUID      `json:"organization_id"`
 }
 
 func FindByEmail(dbPool *pgxpool.Pool, email string) (*User, error) {
 	var user User
-	err := dbPool.QueryRow(context.Background(), data.QueryUser, email).Scan(&user.ID, &user.Email, &user.Password, &user.Role)
+	err := dbPool.QueryRow(context.Background(), data.QueryUser, email).Scan(&user.ID, &user.Email, &user.Password, &user.Role, &user.OrganizationId)
 	if err != nil {
 		return nil, err
 	}

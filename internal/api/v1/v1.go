@@ -21,6 +21,8 @@ func New(dbPool *pgxpool.Pool, cfg *config.Config) chi.Router {
 		r.Get("/protected", func(w http.ResponseWriter, r *http.Request) {
 			render.JSON(w, r, map[string]string{"message": "protected"})
 		})
+		r.Mount("/documentation", routes.Documentations(dbPool, cfg))
+		r.Mount("/tag", routes.Tags(dbPool))
 	})
 
 	return r

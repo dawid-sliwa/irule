@@ -1,7 +1,9 @@
 package middlewares
 
 import (
+	"context"
 	"irule-api/internal/config"
+	"irule-api/internal/constant"
 	"irule-api/internal/svc"
 	"net/http"
 	"strings"
@@ -21,12 +23,13 @@ func AuthMiddleware(cfg *config.Config) func(next http.Handler) http.Handler {
 				return
 			}
 			tokenString := str[1]
-			err := svc.VerifyToken(tokenString, cfg)
+			user, err := svc.VerifyToken(tokenString, cfg)
 			if err != nil {
 				http.Error(w, "Unauthorized", http.StatusUnauthorized)
 				return
 			}
-			next.ServeHTTP(w, r)
+			ctx := context.WithValue(r.Context(), constant.UserKey, user)
+			next.ServeHTTP(w, r.WithContext(ctx))
 		})
 	}
 }

@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -18,6 +19,7 @@ func New(gtcx context.Context, wg *sync.WaitGroup, dbPool *pgxpool.Pool, cfg *co
 	defer wg.Done()
 
 	r := chi.NewRouter()
+	r.Use(middleware.Logger)
 	r.Mount("/api/v1", v1.New(dbPool, cfg))
 
 	server := &http.Server{

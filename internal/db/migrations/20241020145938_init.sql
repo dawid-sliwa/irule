@@ -12,11 +12,6 @@ create table organizations (
     created_at timestamptz not null default now()
 );
 
-create table roles (
-    id uuid primary key default uuid_generate_v4(),
-    name varchar(64) not null
-);
-
 create type user_role as enum ('admin', 'user');
 
 create table users (
@@ -30,20 +25,28 @@ create table users (
     role user_role not null default 'user'
 );
 
-create table tasks (
+
+create table documentations (
     id uuid primary key default uuid_generate_v4(),
     name varchar(256),
-    description text,
+    content text,
     created_at timestamptz not null default now(),
-    user_id uuid,
-    organization_id uuid
-)
+    updated_at timestamptz not null default now(),
+    organization_id uuid not null
+);
+
+create table tags (
+    id uuid primary key default uuid_generate_v4(),
+    name varchar(256),
+    documentation_id uuid not null
+);
+
 
 -- Relationships
 
 alter table users add constraint users_organizations_fkey foreign key (organization_id) references organizations(id) on delete cascade;
-alter table tasks add constraint tasks_users_fkey foreign key (user_id) references users(id) on delete cascade;
-alter table tasks add constraint tasks_organizations_fkey foreign key (organization_id) references organizations(id) on delete cascade;
+alter table documentations add constraint documentations_organization_fkey foreign key (organization_id) references organizations(id) on delete cascade;
+alter table tags add constraint tags_documentation_fkey foreign key (documentation_id) references documentations(id) on delete cascade;
 
 -- +goose StatementBegin
 CREATE
@@ -83,10 +86,12 @@ SELECT
     'down SQL query';
 
 -- +goose StatementEnd
-drop table users;
+drop table users cascade;
 
-drop table organizations;
-
-drop table roles;
+drop table organizations cascade;
 
 drop type user_role;
+
+drop table documentations cascade;
+
+drop table tags cascade;
