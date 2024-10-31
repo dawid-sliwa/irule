@@ -43,6 +43,18 @@ func (u *User) Create(dbPoll *pgxpool.Pool) error {
 	return nil
 }
 
+func (u *User) CreateUser(dbPoll *pgxpool.Pool) error {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(u.Password), 14)
+	if err != nil {
+		return err
+	}
+	_, err = dbPoll.Exec(context.Background(), data.QueryCreateUserOrg, bytes, u.Email, u.Role, u.OrganizationId)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (u *User) ComparePassword(password string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
 	return err == nil

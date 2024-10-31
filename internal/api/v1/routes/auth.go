@@ -3,6 +3,7 @@ package routes
 import (
 	"encoding/json"
 	"irule-api/internal/config"
+	"irule-api/internal/constant"
 	"irule-api/internal/db/models"
 	"irule-api/internal/svc"
 	"net/http"
@@ -82,4 +83,39 @@ func Register(dbPool *pgxpool.Pool) http.HandlerFunc {
 type LoginRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
+}
+
+func Me(dbPool *pgxpool.Pool) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		user := r.Context().Value(constant.UserKey).(*svc.UserClaims)
+		render.JSON(w, r, user)
+	}
+}
+
+func CreateUser(dbPool *pgxpool.Pool) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		user := r.Context().Value(constant.UserKey).(*svc.UserClaims)
+		if user.Role != "admin" {
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			return
+		}
+
+		var body LoginRequest
+		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		dbUser := &models.User{
+			Role:           "user",
+			Email:          body.Email,
+			Password:       body.Password,
+			OrganizationId: user.OrganizationId,
+		}
+		err := dbUser.CreateUser(dbPool)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		render.JSON(w, r, map[string]string{"status": "ok"})
+	}
 }

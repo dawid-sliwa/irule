@@ -4,7 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"irule-api/data"
+	"irule-api/internal/constant"
 	"irule-api/internal/db/models"
+	"irule-api/internal/svc"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -75,7 +77,7 @@ func CreateTag(dbpool *pgxpool.Pool) http.HandlerFunc {
 			return
 		}
 		var dbTag models.Tag
-		err := dbpool.QueryRow(context.Background(), data.InsertTag, tag.Name, tag.DocumentationId).Scan(&dbTag.ID, &dbTag.Name)
+		err := dbpool.QueryRow(context.Background(), data.InsertTag, tag.Name, tag.DocumentationId, r.Context().Value(constant.UserKey).(*svc.UserClaims).UserID).Scan(&dbTag.ID, &dbTag.Name)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

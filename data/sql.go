@@ -5,6 +5,8 @@ const (
 
 	QueryCreateUser = `INSERT INTO users (password, email, role) VALUES ($1, $2, $3)`
 
+	QueryCreateUserOrg = `INSERT INTO users (password, email, role, organization_id) VALUES ($1, $2, $3, $4)`
+
 	QueryDocumentationsByOrg = `
 	SELECT 
 		d.id,
@@ -41,9 +43,32 @@ const (
 
 	QueryTagByID = `SELECT id, name FROM tags WHERE id = $1 AND documentation_id = $2`
 
-	InsertTag = `INSERT INTO tags (name, documentation_id) VALUES ($1, $2) RETURNING id, name`
+	InsertTag = `INSERT INTO tags (name, documentation_id, created_by) VALUES ($1, $2, $3
+	) RETURNING id, name`
 
 	UpdateTag = `UPDATE tags SET name = $1 WHERE id = $2 RETURNING id, name`
 
 	DeleteTag = `DELETE FROM tags WHERE id = $1`
+
+	GetUserSttats = `
+SELECT
+	u.id AS user_id,
+	tag_counts.tags_created_count,
+	u.email
+FROM
+	users u
+JOIN (
+	SELECT
+		created_by AS user_id,
+		COUNT(id) AS tags_created_count
+	FROM
+		tags
+	GROUP BY
+		created_by
+) AS tag_counts ON u.id = tag_counts.user_id
+WHERE
+	u.organization_id = $1
+ORDER BY
+	tag_counts.tags_created_count DESC;
+`
 )

@@ -13,6 +13,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
+	"github.com/go-playground/validator/v10"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -29,8 +30,8 @@ func Documentations(dbpool *pgxpool.Pool, cfg *config.Config) chi.Router {
 }
 
 type CreateDocumentationRequest struct {
-	Title   string `json:"title"`
-	Content string `json:"content"`
+	Title   string `json:"title" validate:"required,min=5,max=100"`
+	Content string `json:"content" validate:"required,min=20"`
 }
 
 type DocumentationResponse struct {
@@ -119,6 +120,12 @@ func CreateDocumentation(dbpool *pgxpool.Pool) http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
+		validate := validator.New()
+		if err := validate.Struct(req); err != nil {
+			http.Error(w, fmt.Sprintf("Validation error: %v", err), http.StatusBadRequest)
+			return
+		}
+
 		var doc models.Documentation
 		err := dbpool.QueryRow(
 			context.Background(),
@@ -143,6 +150,12 @@ func UpdateDocumentation(dbpool *pgxpool.Pool) http.HandlerFunc {
 		var req CreateDocumentationRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		validate := validator.New()
+		if err := validate.Struct(req); err != nil {
+			http.Error(w, fmt.Sprintf("Validation error: %v", err), http.StatusBadRequest)
 			return
 		}
 		var doc models.Documentation
