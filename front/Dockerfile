@@ -1,11 +1,18 @@
 # Use a single stage for simplicity
-FROM node:20-alpine
+FROM node:20-alpine as build
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm install
 COPY . .
 RUN npm run build
 
-# Serve with Vite preview
-EXPOSE 4173
-CMD ["npm", "run", "preview"]
+
+FROM nginx:latest as nginx-runner
+
+
+COPY --from=build /app/dist /usr/share/nginx/html
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+
+
+EXPOSE 443
+CMD ["nginx", "-g", "daemon off;"]
