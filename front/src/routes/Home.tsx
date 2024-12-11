@@ -15,7 +15,7 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 
 const fetchStats = async (token: string) => {
-  const { data } = await axios.get("http://localhost:8080/api/v1/user-stats", {
+  const { data } = await axios.get("http://app:8080/api/v1/user-stats", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -28,7 +28,7 @@ const createUser = async (
   token: string
 ) => {
   const response = await axios.post(
-    "http://localhost:8080/api/v1/create-user",
+    "http://app:8080/api/v1/create-user",
     data,
     {
       headers: {

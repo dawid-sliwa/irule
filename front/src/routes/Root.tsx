@@ -7,7 +7,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 
 const fetchMe = async (token: string) => {
   const response = await axios.get(
-    `http://localhost:8080/api/v1/me`,
+    `http://app:8080/api/v1/me`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 const fetchDocumentations = async (token: string) => {
-  const { data } = await axios.get("http://localhost:8080/api/v1/documentation", {
+  const { data } = await axios.get("http://app:8080/api/v1/documentation", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -14,7 +14,7 @@ const fetchDocumentations = async (token: string) => {
 };
 
 const deleteDocumentation = async ({ id, token }: { id: string; token: string }) => {
-  await axios.delete(`http://localhost:8080/api/v1/documentation/${id}`, {
+  await axios.delete(`http://app:8080/api/v1/documentation/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

@@ -5,7 +5,7 @@ import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 const fetchDocumentation = async (id: string, token: string) => {
-  const { data } = await axios.get(`http://localhost:8080/api/v1/documentation/${id}`, {
+  const { data } = await axios.get(`http://app:8080/api/v1/documentation/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
