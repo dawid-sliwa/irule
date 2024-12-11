@@ -24,7 +24,7 @@ export function Login() {
   const { login } = useAuthContext();
 
   const mutation = useMutation({
-    mutationFn: (data: TloginUser) => axios.post("http://app:8080/api/v1/auth/login", data),
+    mutationFn: (data: TloginUser) => axios.post("/api/v1/auth/login", data),
     onSuccess: (response) => {
       const token = response.data.token;
       login(token);

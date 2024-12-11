@@ -29,7 +29,7 @@ const fetchDocumentation = async (
   token: string
 ): Promise<DocumentationResponse> => {
   const response = await axios.get(
-    `http://app:8080/api/v1/documentation/${id}`,
+    `/v1/documentation/${id}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -50,7 +50,7 @@ const updateDocumentation = async (
     content: data.content,
   }
   const response = await axios.put(
-    `http://app:8080/api/v1/documentation/${id}`,
+    `/v1/documentation/${id}`,
     newData,
     {
       headers: {
@@ -68,7 +68,7 @@ const createTag = async (
   token: string
 ): Promise<TagData> => {
   const response = await axios.post(
-    `http://app:8080/api/v1/tag`,
+    `/api/v1/tag`,
     { name: tagName, documentation_id: docId },
     {
       headers: {
@@ -81,7 +81,7 @@ const createTag = async (
 
 // Delete a tag
 const deleteTag = async (tagId: string, token: string): Promise<void> => {
-  await axios.delete(`http://app:8080/api/v1/tag/${tagId}`, {
+  await axios.delete(`/api/v1/tag/${tagId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

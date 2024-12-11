@@ -24,7 +24,7 @@ export function Register() {
 
   const mutation = useMutation({
     mutationFn: (data: TloginUser) =>
-      axios.post("http://app:8080/api/v1/auth/register", data),
+      axios.post("/api/v1/auth/register", data),
     onSuccess: () => {
       navigate("/login");
     },

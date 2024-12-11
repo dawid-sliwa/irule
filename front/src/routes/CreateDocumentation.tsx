@@ -12,7 +12,7 @@ import { useState } from "react";
 
 const createDocumentation = async (data: any, token: string) => {
   const response = await axios.post(
-    "http://app:8080/api/v1/documentation",
+    "/api/v1/documentation",
     data,
     {
       headers: {
